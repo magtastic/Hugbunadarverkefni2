@@ -3,7 +3,7 @@
 
     <item
         is-multidex="true"
-        jar="/Users/kristofermasson/StudioProjects/Hugbunadarverkefni2/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jar="C:\Users\svein\Documents\skoli\vor2017\hugbunadarverkefni2\eventually\Hugbunadarverkefni2\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
