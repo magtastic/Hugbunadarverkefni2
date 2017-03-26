@@ -10,12 +10,8 @@
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="No Filters" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9da6ade1-36b2-4b27-ae73-c0bfcd02a93d" name="Default" comment="Added placepicker">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/runConfigurations.xml" />
+    <list default="true" id="9da6ade1-36b2-4b27-ae73-c0bfcd02a93d" name="Default" comment="When place is picked a toast i made">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/app.iml" afterPath="$PROJECT_DIR$/app/app.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/project/hugbunadarverkefni2/MainActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/project/hugbunadarverkefni2/MainActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build/intermediates/dex-cache/cache.xml" afterPath="$PROJECT_DIR$/build/intermediates/dex-cache/cache.xml" />
     </list>
     <ignored path="Hugbunadarverkefni2.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -2765,6 +2761,14 @@
       <option name="presentableId" value="Default" />
       <updated>1487862075043</updated>
     </task>
+    <task id="LOCAL-00001" summary="When place is picked a toast i made">
+      <created>1490543854961</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1490543854961</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -2821,7 +2825,8 @@
     <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="Added Toolbar with search icon" />
     <MESSAGE value="Added placepicker" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added placepicker" />
+    <MESSAGE value="When place is picked a toast i made" />
+    <option name="LAST_COMMIT_MESSAGE" value="When place is picked a toast i made" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
