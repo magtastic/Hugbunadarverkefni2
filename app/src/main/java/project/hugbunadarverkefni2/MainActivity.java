@@ -24,8 +24,23 @@ import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListe
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.model.LatLng;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity implements OnConnectionFailedListener {
     private static final int PLACE_PICKER_REQUEST = 1;
@@ -92,8 +107,13 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
                 String toastMsg = String.format("Place: %s", place.getName());
                 Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
 
+
                 RequestQueue queue = Volley.newRequestQueue(this);
+
+                // search string
+                LatLng latLng = place.getLatLng();
                 String url = "https://hugbunadarverkefni2server-kovrishssy.now.sh";
+                url += "/search?searchString="+latLng.latitude+","+latLng.longitude;
 
                 JsonObjectRequest jsObjRequest = new JsonObjectRequest
                         (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -101,6 +121,8 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
                             @Override
                             public void onResponse(JSONObject response) {
                                 Log.d("Response: ", response.toString());
+                                //// Events
+                                List<Event> events = parseJSONtoEvent(response);
                             }
                         }, new Response.ErrorListener() {
 
@@ -113,6 +135,39 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
                 queue.add(jsObjRequest);
             }
         }
+    }
+
+    public List<Event> parseJSONtoEvent(JSONObject data) {
+        List<Event> events = new ArrayList<Event>();
+        SimpleDateFormat customDate = new SimpleDateFormat("yyyy-MM-dd'T'HH':'mm':'ss'+'SSSS");
+
+        try {
+            JSONArray eventsJSONArray = data.getJSONArray("events");
+
+            for(int i = 0; i<eventsJSONArray.length(); i++) {
+                JSONObject eventJSONObject = eventsJSONArray.getJSONObject(i);
+                //Log.d("ID >>>>>>>>> ", eventJSONObject.getString("id"));
+                //Log.d("startTime >>>>>>>> ",eventJSONObject.getString("startTime"));
+                events.add(new Event(
+                        eventJSONObject.getString("id"),
+                        eventJSONObject.getJSONObject("stats").getString("attending"),
+                        customDate.parse(eventJSONObject.getString("startTime")),
+                        customDate.parse(eventJSONObject.getString("endTime")),
+                        eventJSONObject.getString("name"),
+                        eventJSONObject.getString("coverPicture"),
+                        eventJSONObject.getString("profilePicture"),
+                        eventJSONObject.getString("description"),
+                        eventJSONObject.getJSONObject("venue").getString("name")
+                        ));
+                Log.d("events", events.get(i).getTitle());
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return events;
     }
 
     @Override
