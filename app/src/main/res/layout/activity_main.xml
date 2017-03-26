@@ -25,6 +25,13 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         tools:context="project.hugbunadarverkefni2.MainActivity">
 
+        <ListView
+            android:id="@+id/list_of_events"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true" />
     </RelativeLayout>
 
 </LinearLayout>

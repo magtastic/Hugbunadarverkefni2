@@ -1,13 +1,22 @@
 package project.hugbunadarverkefni2;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -42,9 +51,11 @@ import java.util.Date;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements OnConnectionFailedListener {
+public class MainActivity extends AppCompatActivity implements OnConnectionFailedListener/*, EventFragment.OnFragmentInteractionListener*/ {
     private static final int PLACE_PICKER_REQUEST = 1;
     private GoogleApiClient mGoogleApiClient;
+    private ListView listOfEventsView;
+    private List<Event> events;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
         // Sets the Toolbar to act as the ActionBar for this Activity window.
         // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
+        listOfEventsView = (ListView) findViewById(R.id.list_of_events);
 
     }
 
@@ -115,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
                 String url = "https://hugbunadarverkefni2server-kovrishssy.now.sh";
                 url += "/search?searchString="+latLng.latitude+","+latLng.longitude;
 
+                // get request
                 JsonObjectRequest jsObjRequest = new JsonObjectRequest
                         (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 
@@ -122,7 +135,36 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
                             public void onResponse(JSONObject response) {
                                 Log.d("Response: ", response.toString());
                                 //// Events
-                                List<Event> events = parseJSONtoEvent(response);
+                                events = parseJSONtoEvent(response);
+                                // Create
+                                String[] eventsTitles = new String[events.size()];
+                                for(int i = 0; i<eventsTitles.length; i++) {
+                                    eventsTitles[i] = events.get(i).getTitle();
+                                }
+
+                                ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, eventsTitles);
+                                listOfEventsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                                        Log.d("Position>>>>>", String.valueOf(position));
+                                        Log.d("ID >>>>>>>", String.valueOf(id));
+
+                                        // Fragment
+                                        FragmentManager manager = getFragmentManager();
+                                        Fragment frag = manager.findFragmentByTag("single_event_fragment");
+
+                                        if(frag != null) {
+                                            manager.beginTransaction().remove(frag).commit();
+                                        }
+
+                                        EventFragment eventFragment = EventFragment.newInstance(events.get(position).getDescription());
+                                        eventFragment.show(manager, "single_event_fragment");
+                                    }
+                                });
+                                listOfEventsView.setAdapter(adapter);
+
+
                             }
                         }, new Response.ErrorListener() {
 
@@ -146,8 +188,7 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
 
             for(int i = 0; i<eventsJSONArray.length(); i++) {
                 JSONObject eventJSONObject = eventsJSONArray.getJSONObject(i);
-                //Log.d("ID >>>>>>>>> ", eventJSONObject.getString("id"));
-                //Log.d("startTime >>>>>>>> ",eventJSONObject.getString("startTime"));
+                // Creating Events
                 events.add(new Event(
                         eventJSONObject.getString("id"),
                         eventJSONObject.getJSONObject("stats").getString("attending"),
@@ -174,4 +215,5 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.d("Connection:", "Failed");
     }
+
 }
