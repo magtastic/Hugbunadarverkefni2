@@ -7,8 +7,17 @@
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
-        sha1="a789c87dd132b6fe7e062359f54225e5b0bd122a">
+        sha1="91cc935ef21f1f5e2716b7d5cd0ad2402d398e0d">
         <dex dex="/Users/kristofermasson/StudioProjects/Hugbunadarverkefni2/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_31972d95a7ad54c80d6ce6a733017d36e2627e3c/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/kristofermasson/.android/build-cache/eec01976bc809dcd99590630f98d77263906d370/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="2cd4b982617e544728de0782d718a58ce1b06e3f">
+        <dex dex="/Users/kristofermasson/StudioProjects/Hugbunadarverkefni2/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_6aadfb04bb86b2370e1c8af3e4376793a3b5097d/classes.dex" />
     </item>
     <item
         is-multidex="true"
