@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
 
                 // search string
                 LatLng latLng = place.getLatLng();
-                String url = "https://hugbunadarverkefni2server-kovrishssy.now.sh";
+                String url = "https://hugbunadarverkefni2server-tjjsgkmvbu.now.sh";
                 url += "/search?searchString="+latLng.latitude+","+latLng.longitude;
 
                 // get request
