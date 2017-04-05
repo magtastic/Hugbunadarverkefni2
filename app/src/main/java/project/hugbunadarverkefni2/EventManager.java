@@ -35,7 +35,6 @@ import java.util.concurrent.Callable;
 
 public class EventManager {
 
-    private Filter activeFilter;
     private List<Event> allEvents;
     private List<Event> shownEvents;
 
@@ -77,27 +76,31 @@ public class EventManager {
         queue.add(jsObjRequest);
     }
 
-    public List<Event> applyActiveFilter() {
+    public List<Event> applyActiveFilter(Filter activeFilter) {
 
         List<Event> eventsToShow = new ArrayList<Event>();
 
         // filter attendees
         for(int i = 0; i < this.allEvents.size(); i++) {
             int numAttendees = Integer.parseInt(this.allEvents.get(i).getNumberOfAttendees());
-            if(numAttendees >= this.activeFilter.getMinAttendees() &&
-               numAttendees <= this.activeFilter.getMaxAttendees()){
+            if(numAttendees >= activeFilter.getMinAttendees() &&
+               numAttendees <= activeFilter.getMaxAttendees()){
                 // fulfills attendees criteria
                 eventsToShow.add(allEvents.get(i));
             }
         }
         // filter days
         for(int i = 0; i < this.allEvents.size(); i++) {
-            Date startTime = this.allEvents.get(i).getStartTime();
-            Date endTime = this.allEvents.get(i).getEndTime();
-            int daysUntil = daysBetweenDates(startTime, endTime);
 
-            if(daysUntil < this.activeFilter.getMaxDaysUntil()   &&
-               daysUntil > this.activeFilter.getMinDaysUntil()){
+            SimpleDateFormat customDate = new SimpleDateFormat("yyyy-MM-dd'T'HH':'mm':'ss'+'SSSS");
+
+            Date startTime = this.allEvents.get(i).getStartTime();
+            Date today = new Date();
+
+            int daysUntil = daysBetweenDates(today, startTime);
+
+            if(daysUntil <= activeFilter.getMaxDaysUntil()   &&
+               daysUntil >= activeFilter.getMinDaysUntil()){
                 // fulfills days until criteria
                 eventsToShow.add(this.allEvents.get(i));
             }
@@ -108,11 +111,6 @@ public class EventManager {
     }
 
 
-    public Filter getActiveFilter() {
-
-        return this.activeFilter;
-    }
-
     public List<Event> getAllEvents() {
         return this.allEvents;
     }
@@ -121,10 +119,6 @@ public class EventManager {
         return this.shownEvents;
     }
 
-    public void setActiveFilter(Filter activeFilter) {
-
-        this.activeFilter = activeFilter;
-    }
 
     public void setAllEvents(List<Event> allEvents) {
         this.allEvents = allEvents;
@@ -166,35 +160,7 @@ public class EventManager {
 
         long startTime = startDate.getTime();
         long endTime = endDate.getTime();
-        return(int)(endTime - startTime)/(24 * 60 * 60 * 1000);
-
-//        Log.d("dateFormat>>>>> ", endDate.toString() );
-//
-//        String startDateString = endDate.toString();
-//        String endDateString = endDate.toString();
-//
-//        String [] startDateParts =  startDateString.split(" ");
-//        String [] endDateParts = endDateString.split(" ");
-//
-////        int days = Days.daysBetween(startDate, endDate).getDays();
-//
-//
-//
-//        String startMonth = startDateParts[1];
-//        String startDay = startDateParts[2];
-//        String startYear = startDateParts[5];
-//
-//        String endMonth = startDateParts[1];
-//        String endDay = startDateParts[2];
-//        String endYear = startDateParts[5];
-//
-////        String day = parts[2];
-////        String hourSpecific = parts[3];
-////        String hourSimple = hourSpecific.substring(0,5);
-////        String year = parts[5];
-//
-//        String myCustomDate = day+" "+month+" "+year;
-//        String myCustomTime = hourSimple;
+        return (int) (endTime - startTime)/(24 * 60 * 60 * 1000);
 
     }
 

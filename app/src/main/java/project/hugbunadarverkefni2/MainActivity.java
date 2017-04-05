@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
     private List<Event> events;
     private EventManager eventManager = new EventManager();
     private Location mLastLocation;
+    private Filter activeFilter = new Filter(0,Integer.MAX_VALUE,0,Integer.MAX_VALUE);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,8 +190,6 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
 
         Log.d("onCreateOptionsMenu", "onCreateOptionsMEnu");
 
-        MenuItem searchItem = menu.findItem(R.id.action_filter_daysUntil);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 
         return super.onCreateOptionsMenu(menu);
 //        return true;
@@ -213,16 +212,6 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
                 }
                 return true;
 
-            case R.id.action_filter_attendees:
-                Log.d("filter", "attendees");
-
-
-
-                return true;
-
-            case R.id.action_filter_daysUntil:
-                Log.d("filter", "days");
-                return true;
 
             default:
                 // If we got here, the user's action was not recognized.
@@ -261,34 +250,40 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
             final List<Event> allEvents = eventManager.getAllEvents();
 
             String[] eventsTitles = new String[allEvents.size()];
+            String[] profilePictures = new String[allEvents.size()];
             for(int i = 0; i<eventsTitles.length; i++) {
                 eventsTitles[i] = allEvents.get(i).getTitle();
+                profilePictures[i] = allEvents.get(i).getProfilePhotoSrc();
             }
 
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, eventsTitles);
-                                listOfEventsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                    @Override
-                                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//          ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, R.layout.my_list_item, R.id.list_item_title, eventsTitles);
+            CustomListAdapter adapter = new CustomListAdapter(MainActivity.this, eventsTitles, profilePictures );
 
-                                        Log.d("Position>>>>>", String.valueOf(position));
-                                        Log.d("ID >>>>>>>", String.valueOf(id));
+            listOfEventsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                                        // Fragment
-                                        FragmentManager manager = getFragmentManager();
-                                        Fragment frag = manager.findFragmentByTag("single_event_fragment");
+                    Log.d("Position>>>>>", String.valueOf(position));
+                    Log.d("ID >>>>>>>", String.valueOf(id));
 
-                                        if(frag != null) {
-                                            manager.beginTransaction().remove(frag).commit();
-                                        }
+                    // Fragment
+                    FragmentManager manager = getFragmentManager();
+                    Fragment frag = manager.findFragmentByTag("single_event_fragment");
 
-                                        EventFragment eventFragment = EventFragment.newInstance(allEvents.get(position));
+                    if(frag != null) {
+                        manager.beginTransaction().remove(frag).commit();
+                    }
 
-                                        eventFragment.show(manager, "single_event_fragment");
-                                    }
-                                });
-                                listOfEventsView.setAdapter(adapter);
+                    EventFragment eventFragment = EventFragment.newInstance(allEvents.get(position));
+
+                    eventFragment.show(manager, "single_event_fragment");
+                }
+            });
+            listOfEventsView.setAdapter(adapter);
         }
     };
+
+
 
     public List<Event> parseJSONtoEvent(JSONObject data) {
         List<Event> events = new ArrayList<Event>();
