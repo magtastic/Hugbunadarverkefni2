@@ -1,6 +1,29 @@
 <resources>
-    <string name="app_name">Hugbunadarverkefni2</string>
+    <string name="app_name">Eventually</string>
+    <string name="attendees">Filter attendees</string>
+    <string name="daysUntil">Filter days</string>
+    <string name="search">Search event</string>
+
+    <string name="droptest1">dropdown test1</string>
+    <string name="droptest2">dropdown test2</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="Title">Title</string>
+    <string name="Location">Location</string>
+    <string name="Date">Date</string>
+    <string name="Description">Description Description Description Description Description Description Description
+    Description Description Description Description Description Description Description Description Description
+    Description Description Description Description Description Description Description Description Description
+    Description Description Description Description Description Description Description
+    Description Description Description Description Description Description Description Description Description Description Description
+    Description Description Description Description Description Description Description Description Description Description
+    Description Description Description Description Description Description Description Description Description Description
+    Description Description Description Description Description Description Description Description Description
+    Description Description Description Description Description Description Description Description Description
+    Description Description Description Description Description Description Description Description Description Description Description
+    Description Description Description Description Description Description Description Description Description Description
+    Description Description Description Description Description Description Description Description Description Description Description
+    Description Description Description Description Description Description Description Description Description Description
+    Description Description Description Description Description Description Description Description Description</string>
 </resources>

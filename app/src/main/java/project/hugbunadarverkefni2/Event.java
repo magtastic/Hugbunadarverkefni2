@@ -1,12 +1,13 @@
 package project.hugbunadarverkefni2;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by svein on 26.3.2017.
  */
 
-public class Event {
+public class Event implements Serializable {
 
     String id;
     String numberOfAttendees;

@@ -1,14 +1,23 @@
 package project.hugbunadarverkefni2;
 
+import android.*;
+import android.Manifest;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,6 +39,7 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
@@ -42,6 +52,7 @@ import org.json.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -49,25 +60,36 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Function;
 
 
-public class MainActivity extends AppCompatActivity implements OnConnectionFailedListener/*, EventFragment.OnFragmentInteractionListener*/ {
+public class MainActivity extends AppCompatActivity implements OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
     private static final int PLACE_PICKER_REQUEST = 1;
     private GoogleApiClient mGoogleApiClient;
     private ListView listOfEventsView;
     private List<Event> events;
+    private EventManager eventManager = new EventManager();
+    private Location mLastLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mGoogleApiClient = new GoogleApiClient
-                .Builder(this)
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
-                .enableAutoManage(this, this)
-                .build();
+        getPermissionToReadUserContacts();
+
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient
+                    .Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .addApi(Places.GEO_DATA_API)
+                    .addApi(Places.PLACE_DETECTION_API)
+                    .enableAutoManage(this, this)
+                    .build();
+        }
+
 
         // Find the toolbar view inside the activity layout
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -78,13 +100,100 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
 
     }
 
+    private static final int ACCESS_LOCATION_PERMISSIONS_REQUEST = 1;
+
+    // Called when the user is performing an action which requires the app to read the
+    // user's contacts
+    public void getPermissionToReadUserContacts() {
+        // 1) Use the support library version ContextCompat.checkSelfPermission(...) to avoid
+        // checking the build version since Context.checkSelfPermission(...) is only available
+        // in Marshmallow
+        // 2) Always check for permission (even if permission has already been granted)
+        // since the user can revoke permissions at any time through Settings
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // The permission is NOT already granted.
+            // Check if the user has been asked about this permission already and denied
+            // it. If so, we want to give more explanation about why the permission is needed.
+            if ((ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION))) {
+                // Show our own UI to explain to the user why we need to read the contacts
+                // before actually requesting the permission and showing the default UI
+            }
+
+            // Fire off an async request to actually get the permission
+            // This will show the standard permission request dialog UI
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    ACCESS_LOCATION_PERMISSIONS_REQUEST);
+        }
+    }
+
+    // Callback with the request from calling requestPermissions(...)
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        // Make sure it's our original READ_CONTACTS request
+        if (requestCode == ACCESS_LOCATION_PERMISSIONS_REQUEST) {
+            if (grantResults.length == 1 &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Read Contacts permission granted", Toast.LENGTH_SHORT).show();
+            } else {
+                // showRationale = false if user clicks Never Ask Again, otherwise true
+                boolean showRationale = ActivityCompat.shouldShowRequestPermissionRationale( this, android.Manifest.permission.ACCESS_FINE_LOCATION);
+
+                if (showRationale) {
+                    // do something here to handle degraded mode
+                } else {
+                    Toast.makeText(this, "Read Contacts permission denied", Toast.LENGTH_SHORT).show();
+                }
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+    protected void onStart() {
+        Log.d("onStart","onStart>>>>>>>>>>>>>>>>>>>>>>>");
+        mGoogleApiClient.connect();
+        super.onStart();
+    }
+    protected void onStop() {
+        Log.d("onStart","onStop>>>>>>>>>>>>>>>>>>>>>>>");
+        mGoogleApiClient.disconnect();
+        super.onStop();
+    }
+
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        Log.d("onConnected","onConnected11>>>>>>>>>>>..");
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        Log.d("onConnected","onConnected22>>>>>>>>>>>..");
+        if (mLastLocation != null) {
+
+            eventManager.fetchFBEvents(String.valueOf(mLastLocation.getLatitude()), String.valueOf(mLastLocation.getLongitude()), this, displayEvents);
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.d("Connection:", "Suspended");
+    }
+
     // Menu icons are inflated just as they were with actionbar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        return true;
+        Log.d("onCreateOptionsMenu", "onCreateOptionsMEnu");
+
+        MenuItem searchItem = menu.findItem(R.id.action_filter_daysUntil);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+
+        return super.onCreateOptionsMenu(menu);
+//        return true;
     }
 
     @Override
@@ -104,6 +213,17 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
                 }
                 return true;
 
+            case R.id.action_filter_attendees:
+                Log.d("filter", "attendees");
+
+
+
+                return true;
+
+            case R.id.action_filter_daysUntil:
+                Log.d("filter", "days");
+                return true;
+
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
@@ -119,30 +239,33 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
                 String toastMsg = String.format("Place: %s", place.getName());
                 Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
 
-
-                RequestQueue queue = Volley.newRequestQueue(this);
-
                 // search string
                 LatLng latLng = place.getLatLng();
-                String url = "https://hugbunadarverkefni2server-tjjsgkmvbu.now.sh";
-                url += "/search?searchString="+latLng.latitude+","+latLng.longitude;
 
-                // get request
-                JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                        (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                Log.d("Response: ", response.toString());
-                                //// Events
-                                events = parseJSONtoEvent(response);
-                                // Create
-                                String[] eventsTitles = new String[events.size()];
-                                for(int i = 0; i<eventsTitles.length; i++) {
-                                    eventsTitles[i] = events.get(i).getTitle();
-                                }
+                //fetch Events
+                eventManager.fetchFBEvents(String.valueOf(latLng.latitude), String.valueOf(latLng.longitude), this, displayEvents);
 
-                                ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, eventsTitles);
+            }
+        }
+    }
+
+
+
+    // callback function
+    public Runnable displayEvents = new Runnable() {
+        @Override
+        public void run() {
+            Log.d("displayEvents", "displayEvents");
+
+            final List<Event> allEvents = eventManager.getAllEvents();
+
+            String[] eventsTitles = new String[allEvents.size()];
+            for(int i = 0; i<eventsTitles.length; i++) {
+                eventsTitles[i] = allEvents.get(i).getTitle();
+            }
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, eventsTitles);
                                 listOfEventsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                     @Override
                                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -158,26 +281,14 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
                                             manager.beginTransaction().remove(frag).commit();
                                         }
 
-                                        EventFragment eventFragment = EventFragment.newInstance(events.get(position).getDescription());
+                                        EventFragment eventFragment = EventFragment.newInstance(allEvents.get(position));
+
                                         eventFragment.show(manager, "single_event_fragment");
                                     }
                                 });
                                 listOfEventsView.setAdapter(adapter);
-
-
-                            }
-                        }, new Response.ErrorListener() {
-
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                // TODO Auto-generated method stub
-                                Log.d("Villa", "Villa");
-                            }
-                        });
-                queue.add(jsObjRequest);
-            }
         }
-    }
+    };
 
     public List<Event> parseJSONtoEvent(JSONObject data) {
         List<Event> events = new ArrayList<Event>();
@@ -213,7 +324,7 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.d("Connection:", "Failed");
+        Log.d("Connection:", connectionResult.toString());
     }
 
 }

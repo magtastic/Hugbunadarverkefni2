@@ -1,15 +1,58 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/single_event_fragment"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="project.hugbunadarverkefni2.EventFragment">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:weightSum="100"
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/text_in_fragment"
+    tools:context="project.hugbunadarverkefni2.EventFragment">
+    <ImageView
+        android:scaleType="fitXY"
+        android:padding="1dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:id="@+id/image_in_fragment"
+        />
+    <LinearLayout
+        android:padding="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/Title"
+            android:id="@+id/title_in_fragment"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif"
+            android:textAlignment="center"
+            />
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/Location"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif"
+            android:id="@+id/location_in_fragment"
+            />
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/Date"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif"
+            android:id="@+id/date_in_fragment"
+            />
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/Description"
+            android:fontFamily="sans-serif"
+            android:id="@+id/description_in_fragment"
 
-</FrameLayout>
+            />
+    </LinearLayout>
+</LinearLayout>

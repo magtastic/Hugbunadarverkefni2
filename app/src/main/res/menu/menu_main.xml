@@ -1,8 +1,26 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:custom="http://schemas.android.com/tools">
+
+    <item
+        android:id="@+id/action_filter_daysUntil"
+        android:icon="@drawable/days"
+        android:title="@string/daysUntil"
+        app:actionViewClass="android.widget.searchView"
+        app:showAsAction="always"/>
+
+
+
+
+    <item
+        android:id="@+id/action_filter_attendees"
+        android:icon="@drawable/attendees"
+        android:title="@string/attendees"
+        app:showAsAction="always"/>
+
     <item
         android:id="@+id/action_search"
         android:icon="@drawable/ic_search"
-        android:title="@string/app_name"
-        app:showAsAction="ifRoom" />
+        android:title="@string/search"
+        app:showAsAction="always"/>
 </menu>
