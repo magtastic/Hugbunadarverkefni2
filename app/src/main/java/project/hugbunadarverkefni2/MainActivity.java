@@ -225,6 +225,9 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
+        final MenuItem attendeesMenuItem = menu.findItem(R.id.action_filter_attendees);
+        final MenuItem daysUntilMenuItem = menu.findItem(R.id.action_filter_daysUntil);
+
         Log.d("onCreateOptionsMenu", "onCreateOptionsMEnu");
 
         MenuItemCompat.OnActionExpandListener attendeesExpandListener = new MenuItemCompat.OnActionExpandListener() {
@@ -233,6 +236,10 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
 
                 Log.d("HEY", "onMenuItemActionExpand: "+String.valueOf(menuItem.getActionView().findViewById(R.id.attendees_min)));
 
+                if(daysUntilMenuItem.isActionViewExpanded()){
+                    daysUntilMenuItem.collapseActionView();
+                }
+
                 minAttFilterInput = (EditText) menuItem.getActionView().findViewById(R.id.attendees_min);
                 maxAttFilterInput = (EditText) menuItem.getActionView().findViewById(R.id.attendees_max);
 
@@ -240,8 +247,10 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
 
                     @Override
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                        activeFilter.setMinAttendees(Integer.parseInt(minAttFilterInput.getText().toString()));
 
+                        if(!minAttFilterInput.getText().toString().equals("")) {
+                            activeFilter.setMinAttendees(Integer.parseInt(minAttFilterInput.getText().toString()));
+                        }
 
                         if(!maxAttFilterInput.getText().toString().equals("")) {
                             activeFilter.setMaxAttendees(Integer.parseInt(maxAttFilterInput.getText().toString()));
@@ -259,7 +268,10 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
                         if(!minAttFilterInput.getText().toString().equals("")) {
                             activeFilter.setMinAttendees(Integer.parseInt(minAttFilterInput.getText().toString()));
                         }
-                        activeFilter.setMaxAttendees(Integer.parseInt(maxAttFilterInput.getText().toString()));
+                        if(!maxAttFilterInput.getText().toString().equals("")) {
+                            activeFilter.setMaxAttendees(Integer.parseInt(maxAttFilterInput.getText().toString()));
+                        }
+
                         displayEvents.run();
                         Log.d("GET TEXT maxatt", v.getText().toString());
                         Log.d("ACTIVE FILTER getmaxatt",String.valueOf(activeFilter.getMaxAttendees()));
@@ -276,8 +288,6 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
             }
         };
 
-        MenuItem attendeesMenuItem = menu.findItem(R.id.action_filter_attendees);
-
         MenuItemCompat.setOnActionExpandListener(attendeesMenuItem, attendeesExpandListener);
 
         /////////////////////////////////////////////
@@ -292,7 +302,9 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
                 minDayFilterInput = (EditText) menuItem.getActionView().findViewById(R.id.days_until_min);
                 maxDayFilterInput = (EditText) menuItem.getActionView().findViewById(R.id.days_until_max);
 
-
+                if(attendeesMenuItem.isActionViewExpanded()){
+                    attendeesMenuItem.collapseActionView();
+                }
 
                 minDayFilterInput.setOnEditorActionListener(new TextView.OnEditorActionListener(){
 
@@ -301,7 +313,10 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
                         if(!maxDayFilterInput.getText().toString().equals("")) {
                             activeFilter.setMaxDaysUntil(Integer.parseInt(maxDayFilterInput.getText().toString()));
                         }
-                        activeFilter.setMinDaysUntil(Integer.parseInt(minDayFilterInput.getText().toString()));
+                        if(!minDayFilterInput.getText().toString().equals("")) {
+                            activeFilter.setMinDaysUntil(Integer.parseInt(minDayFilterInput.getText().toString()));
+                        }
+
 
                         displayEvents.run();
                         Log.d("GET TEXT", v.getText().toString());
@@ -316,7 +331,10 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
                         if(!minDayFilterInput.getText().toString().equals("")) {
                             activeFilter.setMinDaysUntil(Integer.parseInt(minDayFilterInput.getText().toString()));
                         }
-                        activeFilter.setMaxDaysUntil(Integer.parseInt(maxDayFilterInput.getText().toString()));
+                        if(!maxDayFilterInput.getText().toString().equals("")) {
+                            activeFilter.setMaxDaysUntil(Integer.parseInt(maxDayFilterInput.getText().toString()));
+                        }
+
                         displayEvents.run();
                         Log.d("GET TEXT", v.getText().toString());
                         Log.d("ACTIVE FILTER",String.valueOf(activeFilter.getMaxDaysUntil()));
@@ -332,8 +350,6 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
                 return true;
             }
         };
-
-        MenuItem daysUntilMenuItem = menu.findItem(R.id.action_filter_daysUntil);
 
         MenuItemCompat.setOnActionExpandListener(daysUntilMenuItem, daysUntilExpandListener);
 
@@ -455,7 +471,9 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
                         eventJSONObject.getString("coverPicture"),
                         eventJSONObject.getString("profilePicture"),
                         eventJSONObject.getString("description"),
-                        eventJSONObject.getJSONObject("venue").getString("name")
+                        eventJSONObject.getJSONObject("venue").getString("name"),
+                        String.valueOf(eventJSONObject.getJSONObject("venue").getJSONObject("location").getDouble("latitude")),
+                        String.valueOf(eventJSONObject.getJSONObject("venue").getJSONObject("location").getDouble("longitude"))
                         ));
                 Log.d("events", events.get(i).getTitle());
             }

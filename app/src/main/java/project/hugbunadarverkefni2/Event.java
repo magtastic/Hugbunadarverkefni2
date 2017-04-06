@@ -12,9 +12,9 @@ public class Event implements Serializable {
     String id;
     String numberOfAttendees;
     Date startTime, endTime;
-    String title, coverPhotosSrc, profilePhotoSrc, description, venue;
+    String title, coverPhotosSrc, profilePhotoSrc, description, venue, lng, lat;
 
-    public Event( String id, String numberOfAttendees, Date startTime, Date endTime, String title, String coverPhotosSrc, String profilePhotoSrc, String description, String venue) {
+    public Event( String id, String numberOfAttendees, Date startTime, Date endTime, String title, String coverPhotosSrc, String profilePhotoSrc, String description, String venue, String ln, String lat) {
         this.id = id;
         this.numberOfAttendees = numberOfAttendees;
         this.startTime = startTime;
@@ -24,6 +24,9 @@ public class Event implements Serializable {
         this.profilePhotoSrc = profilePhotoSrc;
         this.description = description;
         this.venue = venue;
+        this.lng = lng;
+        this.lat = lat;
+
     }
 
     public String getId() {
@@ -61,4 +64,7 @@ public class Event implements Serializable {
     public String getVenue() {
         return venue;
     }
+
+    public String getLng() {return lng;}
+    public String getLat() {return lat;}
 }

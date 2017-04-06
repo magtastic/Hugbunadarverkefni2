@@ -24,7 +24,7 @@ import java.util.Date;
 public class EventFragment extends DialogFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final Event ARG_PARAM = new Event("a","a",new Date(),new Date(),"a","a","a","a","a");
+    private static final Event ARG_PARAM = new Event("a","a",new Date(),new Date(),"a","a","a","a","a","a","a");
     private static int width;
     private static int height;
 

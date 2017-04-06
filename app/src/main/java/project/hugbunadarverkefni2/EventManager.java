@@ -125,7 +125,9 @@ public class EventManager {
                     "N/A",
                     "N/A",
                     "Try different location and check your filtering!",
-                    "Nowhere"
+                    "Nowhere",
+                    "N/A",
+                    "N/A"
             ));
         }
 
@@ -164,7 +166,10 @@ public class EventManager {
                         eventJSONObject.getString("coverPicture"),
                         eventJSONObject.getString("profilePicture"),
                         eventJSONObject.getString("description"),
-                        eventJSONObject.getJSONObject("venue").getString("name")
+                        eventJSONObject.getJSONObject("venue").getString("name"),
+                        String.valueOf(eventJSONObject.getJSONObject("venue").getJSONObject("location").getDouble("latitude")),
+                        String.valueOf(eventJSONObject.getJSONObject("venue").getJSONObject("location").getDouble("longitude"))
+
                 ));
                 Log.d("events", events.get(i).getTitle());
             }
