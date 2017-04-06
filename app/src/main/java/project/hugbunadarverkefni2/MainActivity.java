@@ -19,13 +19,16 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -49,6 +52,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.android.gms.vision.text.Text;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -70,6 +74,10 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
     private List<Event> events;
     private EventManager eventManager = new EventManager();
     private Location mLastLocation;
+    private EditText minDayFilterInput;
+    private EditText maxDayFilterInput;
+    private EditText minAttFilterInput;
+    private EditText maxAttFilterInput;
     private Filter activeFilter = new Filter(0,Integer.MAX_VALUE,0,Integer.MAX_VALUE);
 
     @Override
@@ -94,12 +102,41 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
 
         // Find the toolbar view inside the activity layout
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
         // Sets the Toolbar to act as the ActionBar for this Activity window.
         // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
         listOfEventsView = (ListView) findViewById(R.id.list_of_events);
 
+
+        /*minDayFilterInput = (EditText) findViewById(R.id.days_until_min);
+        maxDayFilterInput = (EditText) findViewById(R.id.days_until_max);
+
+        minDayFilterInput.setOnEditorActionListener(new TextView.OnEditorActionListener(){
+
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                activeFilter.setMinDaysUntil(Integer.parseInt(v.getText().toString()));
+                displayEvents.run();
+                return false;
+            }
+        });
+        maxDayFilterInput.setOnEditorActionListener(new TextView.OnEditorActionListener(){
+
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                activeFilter.setMaxDaysUntil(Integer.parseInt(v.getText().toString()));
+                displayEvents.run();
+                return false;
+            }
+        });*/
+
+
+
+
     }
+
+
 
     private static final int ACCESS_LOCATION_PERMISSIONS_REQUEST = 1;
 
@@ -190,6 +227,115 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
 
         Log.d("onCreateOptionsMenu", "onCreateOptionsMEnu");
 
+        MenuItemCompat.OnActionExpandListener attendeesExpandListener = new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem menuItem) {
+
+                Log.d("HEY", "onMenuItemActionExpand: "+String.valueOf(menuItem.getActionView().findViewById(R.id.attendees_min)));
+
+                minAttFilterInput = (EditText) menuItem.getActionView().findViewById(R.id.attendees_min);
+                maxAttFilterInput = (EditText) menuItem.getActionView().findViewById(R.id.attendees_max);
+
+                minAttFilterInput.setOnEditorActionListener(new TextView.OnEditorActionListener(){
+
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                        activeFilter.setMinAttendees(Integer.parseInt(minAttFilterInput.getText().toString()));
+
+
+                        if(!maxAttFilterInput.getText().toString().equals("")) {
+                            activeFilter.setMaxAttendees(Integer.parseInt(maxAttFilterInput.getText().toString()));
+                        }
+                        displayEvents.run();
+                        Log.d("GET TEXT minAtt", v.getText().toString());
+                        Log.d("ACTIVE FILTER getminAtt",String.valueOf(activeFilter.getMinAttendees()));
+                        return false;
+                    }
+                });
+                maxAttFilterInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                        if(!minAttFilterInput.getText().toString().equals("")) {
+                            activeFilter.setMinAttendees(Integer.parseInt(minAttFilterInput.getText().toString()));
+                        }
+                        activeFilter.setMaxAttendees(Integer.parseInt(maxAttFilterInput.getText().toString()));
+                        displayEvents.run();
+                        Log.d("GET TEXT maxatt", v.getText().toString());
+                        Log.d("ACTIVE FILTER getmaxatt",String.valueOf(activeFilter.getMaxAttendees()));
+                        return false;
+                    }
+                });
+
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+                return true;
+            }
+        };
+
+        MenuItem attendeesMenuItem = menu.findItem(R.id.action_filter_attendees);
+
+        MenuItemCompat.setOnActionExpandListener(attendeesMenuItem, attendeesExpandListener);
+
+        /////////////////////////////////////////////
+        // Days Until
+        /////////////////////////////////////////////
+        MenuItemCompat.OnActionExpandListener daysUntilExpandListener = new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem menuItem) {
+
+//                Log.d("HEY", "onMenuItemActionExpand: "+String.valueOf(menuItem.getActionView().findViewById(R.id.days_until_min)));
+
+                minDayFilterInput = (EditText) menuItem.getActionView().findViewById(R.id.days_until_min);
+                maxDayFilterInput = (EditText) menuItem.getActionView().findViewById(R.id.days_until_max);
+
+
+
+                minDayFilterInput.setOnEditorActionListener(new TextView.OnEditorActionListener(){
+
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                        if(!maxDayFilterInput.getText().toString().equals("")) {
+                            activeFilter.setMaxDaysUntil(Integer.parseInt(maxDayFilterInput.getText().toString()));
+                        }
+                        activeFilter.setMinDaysUntil(Integer.parseInt(minDayFilterInput.getText().toString()));
+
+                        displayEvents.run();
+                        Log.d("GET TEXT", v.getText().toString());
+                        Log.d("ACTIVE FILTER",String.valueOf(activeFilter.getMinDaysUntil()));
+                        return false;
+                    }
+                });
+                maxDayFilterInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                        if(!minDayFilterInput.getText().toString().equals("")) {
+                            activeFilter.setMinDaysUntil(Integer.parseInt(minDayFilterInput.getText().toString()));
+                        }
+                        activeFilter.setMaxDaysUntil(Integer.parseInt(maxDayFilterInput.getText().toString()));
+                        displayEvents.run();
+                        Log.d("GET TEXT", v.getText().toString());
+                        Log.d("ACTIVE FILTER",String.valueOf(activeFilter.getMaxDaysUntil()));
+                        return false;
+                    }
+                });
+
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+                return true;
+            }
+        };
+
+        MenuItem daysUntilMenuItem = menu.findItem(R.id.action_filter_daysUntil);
+
+        MenuItemCompat.setOnActionExpandListener(daysUntilMenuItem, daysUntilExpandListener);
 
         return super.onCreateOptionsMenu(menu);
 //        return true;
@@ -214,6 +360,7 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
 
 
             default:
+
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
@@ -247,7 +394,11 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
         public void run() {
             Log.d("displayEvents", "displayEvents");
 
-            final List<Event> allEvents = eventManager.getAllEvents();
+            Log.d("getShownEvents", String.valueOf(eventManager.getShownEvents()));
+            eventManager.applyActiveFilter(activeFilter);
+            Log.d("getShownEvents", String.valueOf(eventManager.getShownEvents()));
+
+            final List<Event> allEvents = eventManager.getShownEvents();
 
             String[] eventsTitles = new String[allEvents.size()];
             String[] profilePictures = new String[allEvents.size()];

@@ -38,7 +38,11 @@ public class CustomListAdapter extends ArrayAdapter<String> {
 
         txtTitle.setText(title[position]);
 
-        Picasso.with(imageView.getContext()).load(imgSrc[position]).into(imageView);
+        if(title[position].equals("No events available")) {
+            Picasso.with(imageView.getContext()).load(R.drawable.sad_face).into(imageView);
+        } else {
+            Picasso.with(imageView.getContext()).load(imgSrc[position]).into(imageView);
+        }
 
         return rowView;
 

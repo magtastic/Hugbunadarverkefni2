@@ -61,6 +61,15 @@ public class EventManager {
                         //// Events
                         allEvents = parseJSONtoEvent(response);
 
+                        if(shownEvents != null){
+                            shownEvents.clear();
+                        }
+                        shownEvents = new ArrayList<Event>();
+
+                        for(int i = 0; i < allEvents.size(); i++) {
+                            shownEvents.add(allEvents.get(i));
+                        }
+
                         // Create
                         displayEventsCallback.run();
 
@@ -76,38 +85,53 @@ public class EventManager {
         queue.add(jsObjRequest);
     }
 
-    public List<Event> applyActiveFilter(Filter activeFilter) {
+    public void applyActiveFilter(Filter activeFilter) {
+
+        Log.d("show Events", this.shownEvents.toString());
 
         List<Event> eventsToShow = new ArrayList<Event>();
 
-        // filter attendees
+        // filter attendees and days
         for(int i = 0; i < this.allEvents.size(); i++) {
+
             int numAttendees = Integer.parseInt(this.allEvents.get(i).getNumberOfAttendees());
-            if(numAttendees >= activeFilter.getMinAttendees() &&
-               numAttendees <= activeFilter.getMaxAttendees()){
-                // fulfills attendees criteria
-                eventsToShow.add(allEvents.get(i));
-            }
-        }
-        // filter days
-        for(int i = 0; i < this.allEvents.size(); i++) {
-
-            SimpleDateFormat customDate = new SimpleDateFormat("yyyy-MM-dd'T'HH':'mm':'ss'+'SSSS");
-
             Date startTime = this.allEvents.get(i).getStartTime();
             Date today = new Date();
 
             int daysUntil = daysBetweenDates(today, startTime);
-
-            if(daysUntil <= activeFilter.getMaxDaysUntil()   &&
+            if(numAttendees >= activeFilter.getMinAttendees() &&
+               numAttendees <= activeFilter.getMaxAttendees() &&
+               daysUntil <= activeFilter.getMaxDaysUntil()    &&
                daysUntil >= activeFilter.getMinDaysUntil()){
-                // fulfills days until criteria
-                eventsToShow.add(this.allEvents.get(i));
+                // fulfills attendees criteria
+                eventsToShow.add(allEvents.get(i));
             }
         }
-        this.shownEvents = eventsToShow;
 
-        return eventsToShow;
+        this.shownEvents.clear();
+        for(Event e : eventsToShow) {
+            this.shownEvents.add(e);
+        }
+        eventsToShow.clear();
+
+        if(shownEvents.size() == 0) {
+
+            shownEvents.add(new Event(
+                    "N/A",
+                    "N/A",
+                    new Date(),
+                    new Date(),
+                    "No events available",
+                    "N/A",
+                    "N/A",
+                    "Try different location and check your filtering!",
+                    "Nowhere"
+            ));
+        }
+
+
+        Log.d("show Events", this.shownEvents.toString());
+//        this.shownEvents = eventsToShow;
     }
 
 
@@ -120,9 +144,6 @@ public class EventManager {
     }
 
 
-    public void setAllEvents(List<Event> allEvents) {
-        this.allEvents = allEvents;
-    }
 
     public List<Event> parseJSONtoEvent(JSONObject data) {
         List<Event> events = new ArrayList<Event>();
