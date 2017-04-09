@@ -47,18 +47,16 @@ public class EventManager {
 
         RequestQueue queue = Volley.newRequestQueue(activity);
 
+        // Search url
         String url = "https://hugbunadarverkefni2server-tjjsgkmvbu.now.sh";
         url += "/search?searchString="+lat+","+lng;
-        Log.d(lat, lng);
 
-        // get request
+        // get request to the constructed url
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d("Response: ", response.toString());
-                        //// Events
                         allEvents = parseJSONtoEvent(response);
 
                         if(shownEvents != null){
@@ -87,8 +85,6 @@ public class EventManager {
 
     public void applyActiveFilter(Filter activeFilter) {
 
-        Log.d("show Events", this.shownEvents.toString());
-
         List<Event> eventsToShow = new ArrayList<Event>();
 
         // filter attendees and days
@@ -103,7 +99,7 @@ public class EventManager {
                numAttendees <= activeFilter.getMaxAttendees() &&
                daysUntil <= activeFilter.getMaxDaysUntil()    &&
                daysUntil >= activeFilter.getMinDaysUntil()){
-                // fulfills attendees criteria
+                // fulfills attendees and date criteria
                 eventsToShow.add(allEvents.get(i));
             }
         }
@@ -114,8 +110,9 @@ public class EventManager {
         }
         eventsToShow.clear();
 
+        // If no event was found we generate a new event 
+        // that is basically an error message
         if(shownEvents.size() == 0) {
-
             shownEvents.add(new Event(
                     "N/A",
                     "N/A",
@@ -131,9 +128,6 @@ public class EventManager {
             ));
         }
 
-
-        Log.d("show Events", this.shownEvents.toString());
-//        this.shownEvents = eventsToShow;
     }
 
 
@@ -171,7 +165,6 @@ public class EventManager {
                         String.valueOf(eventJSONObject.getJSONObject("venue").getJSONObject("location").getDouble("longitude"))
 
                 ));
-                Log.d("events", events.get(i).getTitle());
             }
 
         } catch (JSONException e) {
