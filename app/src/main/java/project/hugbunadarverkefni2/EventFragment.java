@@ -23,17 +23,11 @@ import java.util.Date;
 
 
 public class EventFragment extends DialogFragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final Event ARG_PARAM = new Event("a","a",new Date(),new Date(),"a","a","a","a","a","a","a");
+    // the fragment initialization parameters
+    private static final Event shownEvent = new Event("a","a",new Date(),new Date(),"a","a","a","a","a","a","a");
     private static int width;
     private static int height;
-
-    // TODO: Rename and change types of parameters
     private Event event;
-
-
-
 
     public EventFragment() {
         // Required empty public constructor
@@ -46,22 +40,19 @@ public class EventFragment extends DialogFragment {
      * @param event Parameter 1.
      * @return A new instance of fragment EventFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static EventFragment newInstance(Event event) {
         EventFragment fragment = new EventFragment();
         Bundle args = new Bundle();
-//        args.putString(ARG_PARAM, event);
-        args.putSerializable("ARG_PARAM", event);
+        args.putSerializable("shownEvent", event);
         fragment.setArguments(args);
         return fragment;
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            event = (Event) getArguments().getSerializable("ARG_PARAM");
+            event = (Event) getArguments().getSerializable("shownEvent");
         }
     }
 
@@ -81,7 +72,6 @@ public class EventFragment extends DialogFragment {
 
         String [] dateAndTime = dateToString(event.getStartTime());
 
-//        ((TextView) descriptionView).setMovementMethod(new ScrollingMovementMethod());
         ((TextView) descriptionView).setText(event.getDescription());
         int ih = imageView.getHeight();
         int dh = ((TextView) descriptionView).getHeight();
@@ -91,24 +81,13 @@ public class EventFragment extends DialogFragment {
         ((TextView) locationView).setText(event.getVenue());
         ((TextView) dateView).setText(dateAndTime[0]+" "+dateAndTime[1]);
 
-
-
-
-//        Log.d("DESCR >>>>>", descr);
         return view;
     }
 
     public String[] dateToString(Date date) {
 
-        Log.d("dateFormat>>>>> ", date.toString() );
-
         String dateString = date.toString();
-
         String [] parts =  dateString.split(" ");
-
-        for(int i = 0; i< parts.length; i++) {
-            Log.d("i >>>> ", parts[i]);
-        }
 
         String month = parts[1];
         String day = parts[2];
@@ -121,10 +100,5 @@ public class EventFragment extends DialogFragment {
 
         return new String[]{myCustomDate, myCustomTime};
     }
-
-//    public void setSize(int width, int height) {
-//        this.width = width;
-//        this.height = height;
-//    }
 
 }
