@@ -6,13 +6,19 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+<<<<<<< HEAD
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+=======
+>>>>>>> master
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.SearchView.OnQueryTextListener;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+<<<<<<< HEAD
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -48,6 +54,10 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
     private EditText minAttFilterInput;
     private EditText maxAttFilterInput;
     private Filter activeFilter = new Filter(0,Integer.MAX_VALUE,0,Integer.MAX_VALUE);
+=======
+import android.view.Menu;
+import android.view.MenuItem;
+>>>>>>> master
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
+<<<<<<< HEAD
         final MenuItem attendeesMenuItem = menu.findItem(R.id.action_filter_attendees);
         final MenuItem daysUntilMenuItem = menu.findItem(R.id.action_filter_daysUntil);
 
@@ -204,10 +215,21 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
                     }
                 });
 
+=======
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+
+        // Configure the search info and add any event listeners...
+        searchView.setOnQueryTextListener(new OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.d("Query submitted:", query);
+>>>>>>> master
                 return true;
             }
 
             @Override
+<<<<<<< HEAD
             public boolean onMenuItemActionCollapse(MenuItem menuItem) {
                 return true;
             }
@@ -269,6 +291,13 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
         };
 
         MenuItemCompat.setOnActionExpandListener(daysUntilMenuItem, daysUntilExpandListener);
+=======
+            public boolean onQueryTextChange(String newText) {
+                Log.d("Query text changed: ", newText);
+                return true;
+            }
+        });
+>>>>>>> master
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -277,6 +306,7 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_search:
+<<<<<<< HEAD
                 try {
                     PlacePicker.IntentBuilder intentBuilder =
                             new PlacePicker.IntentBuilder();
@@ -291,11 +321,19 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
 
             default:
 
+=======
+                // Click the search icon
+                Log.d("SearchBar", "SearchBar Clicked");
+                return true;
+
+            default:
+>>>>>>> master
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
 
         }
+<<<<<<< HEAD
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -313,6 +351,8 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
 
             }
         }
+=======
+>>>>>>> master
     }
 
     // callback function from EventManager after fetching events

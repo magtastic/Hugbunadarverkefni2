@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="true"
+        jar="/Users/kristofermasson/StudioProjects/Hugbunadarverkefni2/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="c82741bc129dd5f99f11a4ab8666ae24262053b6">
+        <dex dex="/Users/kristofermasson/StudioProjects/Hugbunadarverkefni2/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run_e5ec1b070730a982d4a5753afc462cf17abbabd6/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/kristofermasson/StudioProjects/Hugbunadarverkefni2/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="b200ca3a3e8f4ece0ce7b867f3b8810c16db6e3d">
+        <dex dex="/Users/kristofermasson/StudioProjects/Hugbunadarverkefni2/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_31972d95a7ad54c80d6ce6a733017d36e2627e3c/classes.dex" />
+    </item>
+
+</items>
