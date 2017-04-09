@@ -87,7 +87,6 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
     private EditText minAttFilterInput;
     private EditText maxAttFilterInput;
     private Filter activeFilter = new Filter(0,Integer.MAX_VALUE,0,Integer.MAX_VALUE);
-//    private MapFragment mMapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,35 +115,6 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
         // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
         listOfEventsView = (ListView) findViewById(R.id.list_of_events);
-
-
-        /*minDayFilterInput = (EditText) findViewById(R.id.days_until_min);
-        maxDayFilterInput = (EditText) findViewById(R.id.days_until_max);
-
-        minDayFilterInput.setOnEditorActionListener(new TextView.OnEditorActionListener(){
-
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                activeFilter.setMinDaysUntil(Integer.parseInt(v.getText().toString()));
-                displayEvents.run();
-                return false;
-            }
-        });
-        maxDayFilterInput.setOnEditorActionListener(new TextView.OnEditorActionListener(){
-
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                activeFilter.setMaxDaysUntil(Integer.parseInt(v.getText().toString()));
-                displayEvents.run();
-                return false;
-            }
-        });*/
-
-//                MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
-//                Log.d(">>>>>>>>> BABY" , mapFragment + " ");
-//                mapFragment.getMapAsync(this);
-
-
     }
 
 
@@ -203,22 +173,18 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
         }
     }
     protected void onStart() {
-        Log.d("onStart","onStart>>>>>>>>>>>>>>>>>>>>>>>");
         mGoogleApiClient.connect();
         super.onStart();
     }
     protected void onStop() {
-        Log.d("onStart","onStop>>>>>>>>>>>>>>>>>>>>>>>");
         mGoogleApiClient.disconnect();
         super.onStop();
     }
 
     @Override
     public void onConnected(Bundle connectionHint) {
-        Log.d("onConnected","onConnected11>>>>>>>>>>>..");
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
-        Log.d("onConnected","onConnected22>>>>>>>>>>>..");
         if (mLastLocation != null) {
 
             eventManager.fetchFBEvents(String.valueOf(mLastLocation.getLatitude()), String.valueOf(mLastLocation.getLongitude()), this, displayEvents);
@@ -239,13 +205,9 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
         final MenuItem attendeesMenuItem = menu.findItem(R.id.action_filter_attendees);
         final MenuItem daysUntilMenuItem = menu.findItem(R.id.action_filter_daysUntil);
 
-        Log.d("onCreateOptionsMenu", "onCreateOptionsMEnu");
-
         MenuItemCompat.OnActionExpandListener attendeesExpandListener = new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem menuItem) {
-
-                Log.d("HEY", "onMenuItemActionExpand: "+String.valueOf(menuItem.getActionView().findViewById(R.id.attendees_min)));
 
                 if(daysUntilMenuItem.isActionViewExpanded()){
                     daysUntilMenuItem.collapseActionView();
@@ -267,8 +229,6 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
                             activeFilter.setMaxAttendees(Integer.parseInt(maxAttFilterInput.getText().toString()));
                         }
                         displayEvents.run();
-                        Log.d("GET TEXT minAtt", v.getText().toString());
-                        Log.d("ACTIVE FILTER getminAtt",String.valueOf(activeFilter.getMinAttendees()));
                         return false;
                     }
                 });
@@ -284,8 +244,6 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
                         }
 
                         displayEvents.run();
-                        Log.d("GET TEXT maxatt", v.getText().toString());
-                        Log.d("ACTIVE FILTER getmaxatt",String.valueOf(activeFilter.getMaxAttendees()));
                         return false;
                     }
                 });
@@ -308,8 +266,6 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
             @Override
             public boolean onMenuItemActionExpand(MenuItem menuItem) {
 
-//                Log.d("HEY", "onMenuItemActionExpand: "+String.valueOf(menuItem.getActionView().findViewById(R.id.days_until_min)));
-
                 minDayFilterInput = (EditText) menuItem.getActionView().findViewById(R.id.days_until_min);
                 maxDayFilterInput = (EditText) menuItem.getActionView().findViewById(R.id.days_until_max);
 
@@ -330,8 +286,6 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
 
 
                         displayEvents.run();
-                        Log.d("GET TEXT", v.getText().toString());
-                        Log.d("ACTIVE FILTER",String.valueOf(activeFilter.getMinDaysUntil()));
                         return false;
                     }
                 });
@@ -347,8 +301,6 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
                         }
 
                         displayEvents.run();
-                        Log.d("GET TEXT", v.getText().toString());
-                        Log.d("ACTIVE FILTER",String.valueOf(activeFilter.getMaxDaysUntil()));
                         return false;
                     }
                 });
@@ -365,7 +317,6 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
         MenuItemCompat.setOnActionExpandListener(daysUntilMenuItem, daysUntilExpandListener);
 
         return super.onCreateOptionsMenu(menu);
-//        return true;
     }
 
     @Override
@@ -384,20 +335,6 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
                     e.printStackTrace();
                 }
                 return true;
-//            case R.id.action_get_map:
-//
-////                setContentView(R.layout.map_fragment);
-////                MapFragment mapFragment = (MapFragment) getFragmentManager()
-////                        .findFragmentById(R.id.map);
-////                mapFragment.getMapAsync(this);
-//
-//                mMapFragment = MapFragment.newInstance();
-//                FragmentTransaction fragmentTransaction =
-//                        getFragmentManager().beginTransaction();
-//                fragmentTransaction.add(R.id.activity_main, mMapFragment);
-//                fragmentTransaction.commit();
-
-
 
             default:
 
@@ -410,20 +347,12 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
 
     @Override
     public void onMapReady(GoogleMap map) {
-//        EventManager.getShownEvents().forEach((temp) -> {
-//            map.addMarker(new MarkerOptions()
-//                    .position(new LatLng(temp.getId(), temp.getId()))
-//                    .title(temp.getTitle()));
-//        });
 
         List<Event> eve = eventManager.getShownEvents();
 
-//        for(int i = 0 ; i < eve.size(); i++) {
-//          map.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(eve.get(i).getLat()), Double.parseDouble(eve.get(i).getLng()))));
             map.addMarker(new MarkerOptions().anchor(0.35f, 0.87f).position(new LatLng(64.1265,-21.8174)).title("Titill"));
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(64.1265,-21.8174),14.0f));
 
-//        }
 
     }
 
@@ -437,7 +366,6 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
                 // search string
                 LatLng latLng = place.getLatLng();
 
-
                 //fetch Events
                 eventManager.fetchFBEvents(String.valueOf(latLng.latitude), String.valueOf(latLng.longitude), this, displayEvents);
 
@@ -445,17 +373,11 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
         }
     }
 
-
-
     // callback function
     public Runnable displayEvents = new Runnable() {
         @Override
         public void run() {
-            Log.d("displayEvents", "displayEvents");
-
-            Log.d("getShownEvents", String.valueOf(eventManager.getShownEvents()));
             eventManager.applyActiveFilter(activeFilter);
-            Log.d("getShownEvents", String.valueOf(eventManager.getShownEvents()));
 
             final List<Event> allEvents = eventManager.getShownEvents();
 
@@ -466,15 +388,11 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
                 profilePictures[i] = allEvents.get(i).getProfilePhotoSrc();
             }
 
-//          ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, R.layout.my_list_item, R.id.list_item_title, eventsTitles);
             CustomListAdapter adapter = new CustomListAdapter(MainActivity.this, eventsTitles, profilePictures );
 
             listOfEventsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                    Log.d("Position>>>>>", String.valueOf(position));
-                    Log.d("ID >>>>>>>", String.valueOf(id));
 
                     // Fragment
                     FragmentManager manager = getFragmentManager();
@@ -492,42 +410,6 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
             listOfEventsView.setAdapter(adapter);
         }
     };
-
-
-
-    public List<Event> parseJSONtoEvent(JSONObject data) {
-        List<Event> events = new ArrayList<Event>();
-        SimpleDateFormat customDate = new SimpleDateFormat("yyyy-MM-dd'T'HH':'mm':'ss'+'SSSS");
-
-        try {
-            JSONArray eventsJSONArray = data.getJSONArray("events");
-
-            for(int i = 0; i<eventsJSONArray.length(); i++) {
-                JSONObject eventJSONObject = eventsJSONArray.getJSONObject(i);
-                // Creating Events
-                events.add(new Event(
-                        eventJSONObject.getString("id"),
-                        eventJSONObject.getJSONObject("stats").getString("attending"),
-                        customDate.parse(eventJSONObject.getString("startTime")),
-                        customDate.parse(eventJSONObject.getString("endTime")),
-                        eventJSONObject.getString("name"),
-                        eventJSONObject.getString("coverPicture"),
-                        eventJSONObject.getString("profilePicture"),
-                        eventJSONObject.getString("description"),
-                        eventJSONObject.getJSONObject("venue").getString("name"),
-                        String.valueOf(eventJSONObject.getJSONObject("venue").getJSONObject("location").getDouble("latitude")),
-                        String.valueOf(eventJSONObject.getJSONObject("venue").getJSONObject("location").getDouble("longitude"))
-                        ));
-                Log.d("events", events.get(i).getTitle());
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return events;
-    }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {

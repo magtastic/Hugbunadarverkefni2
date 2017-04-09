@@ -1,3 +1,6 @@
 # Hugbunadarverkefni2
 
-Jæææja. þriðja tilraun til að vinna jafnt og þétt yfir alla önnina. LETSGO!
+## Eventually
+    
+**Eventually** lets you what is happening around you! Or anywhere for that matter!
+
