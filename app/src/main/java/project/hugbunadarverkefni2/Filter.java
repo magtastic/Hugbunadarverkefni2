@@ -5,10 +5,9 @@ package project.hugbunadarverkefni2;
  */
 
 public class Filter {
-
+    // temp values
     int minAttendees = 0;
     int maxAttendees = 999;
-    // temp values for dates
     int minDaysUntil = 0;
     int maxDaysUntil = 999;
 
