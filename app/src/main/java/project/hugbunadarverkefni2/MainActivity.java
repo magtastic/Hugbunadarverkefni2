@@ -4,6 +4,7 @@ import android.*;
 import android.Manifest;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -46,12 +47,19 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.vision.text.Text;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -67,7 +75,7 @@ import java.util.List;
 import java.util.function.Function;
 
 
-public class MainActivity extends AppCompatActivity implements OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
+public class MainActivity extends AppCompatActivity implements OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, OnMapReadyCallback {
     private static final int PLACE_PICKER_REQUEST = 1;
     private GoogleApiClient mGoogleApiClient;
     private ListView listOfEventsView;
@@ -79,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
     private EditText minAttFilterInput;
     private EditText maxAttFilterInput;
     private Filter activeFilter = new Filter(0,Integer.MAX_VALUE,0,Integer.MAX_VALUE);
+//    private MapFragment mMapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,7 +140,9 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
             }
         });*/
 
-
+//                MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+//                Log.d(">>>>>>>>> BABY" , mapFragment + " ");
+//                mapFragment.getMapAsync(this);
 
 
     }
@@ -373,6 +384,19 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
                     e.printStackTrace();
                 }
                 return true;
+//            case R.id.action_get_map:
+//
+////                setContentView(R.layout.map_fragment);
+////                MapFragment mapFragment = (MapFragment) getFragmentManager()
+////                        .findFragmentById(R.id.map);
+////                mapFragment.getMapAsync(this);
+//
+//                mMapFragment = MapFragment.newInstance();
+//                FragmentTransaction fragmentTransaction =
+//                        getFragmentManager().beginTransaction();
+//                fragmentTransaction.add(R.id.activity_main, mMapFragment);
+//                fragmentTransaction.commit();
+
 
 
             default:
@@ -382,6 +406,25 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
                 return super.onOptionsItemSelected(item);
 
         }
+    }
+
+    @Override
+    public void onMapReady(GoogleMap map) {
+//        EventManager.getShownEvents().forEach((temp) -> {
+//            map.addMarker(new MarkerOptions()
+//                    .position(new LatLng(temp.getId(), temp.getId()))
+//                    .title(temp.getTitle()));
+//        });
+
+        List<Event> eve = eventManager.getShownEvents();
+
+//        for(int i = 0 ; i < eve.size(); i++) {
+//          map.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(eve.get(i).getLat()), Double.parseDouble(eve.get(i).getLng()))));
+            map.addMarker(new MarkerOptions().anchor(0.35f, 0.87f).position(new LatLng(64.1265,-21.8174)).title("Titill"));
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(64.1265,-21.8174),14.0f));
+
+//        }
+
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

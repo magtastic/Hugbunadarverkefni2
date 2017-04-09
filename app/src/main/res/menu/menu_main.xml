@@ -20,4 +20,5 @@
         android:icon="@drawable/ic_search"
         android:title="@string/search"
         app:showAsAction="ifRoom"/>
+
 </menu>

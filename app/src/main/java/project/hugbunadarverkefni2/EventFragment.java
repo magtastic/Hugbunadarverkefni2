@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.google.android.gms.vision.text.Text;
 import com.squareup.picasso.Picasso;
 
 import java.util.Date;
@@ -82,6 +83,9 @@ public class EventFragment extends DialogFragment {
 
 //        ((TextView) descriptionView).setMovementMethod(new ScrollingMovementMethod());
         ((TextView) descriptionView).setText(event.getDescription());
+        int ih = imageView.getHeight();
+        int dh = ((TextView) descriptionView).getHeight();
+        ((TextView) descriptionView).setHeight(dh + ih);
 
         ((TextView) titleView).setText(event.getTitle());
         ((TextView) locationView).setText(event.getVenue());
