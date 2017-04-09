@@ -137,6 +137,8 @@ public class MainActivity extends AppCompatActivity implements OnConnectionFaile
 
     @Override
     public void onConnected(Bundle connectionHint) {
+        // permission is checked in getPermissionToGetLocation()
+        // hence this warning is ignored
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
         if (mLastLocation != null) {

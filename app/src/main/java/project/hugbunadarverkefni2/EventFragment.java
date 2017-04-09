@@ -24,7 +24,7 @@ import java.util.Date;
 
 public class EventFragment extends DialogFragment {
     // the fragment initialization parameters
-    private static final Event shownEvent = new Event("a","a",new Date(),new Date(),"a","a","a","a","a","a","a");
+    private static final Event shownEvent = new Event("","",new Date(),new Date(),"","","","","","","");
     private static int width;
     private static int height;
     private Event event;
@@ -36,9 +36,6 @@ public class EventFragment extends DialogFragment {
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     *
-     * @param event Parameter 1.
-     * @return A new instance of fragment EventFragment.
      */
     public static EventFragment newInstance(Event event) {
         EventFragment fragment = new EventFragment();
@@ -62,21 +59,25 @@ public class EventFragment extends DialogFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_event_2, container, false);
 
+        // Displaying, image, description, title, location and date in the Event Fragment
         ImageView imageView = (ImageView) view.findViewById(R.id.image_in_fragment2);
         View descriptionView = view.findViewById(R.id.description_in_fragment2);
         View titleView = view.findViewById(R.id.title_in_fragment2);
         View locationView = view.findViewById(R.id.location_in_fragment2);
         View dateView = view.findViewById(R.id.date_in_fragment2);
 
+        // loading image with Picasso
         Picasso.with(imageView.getContext()).load(event.getCoverPhotosSrc()).into(imageView);
-
+        // convert Date object to a readable format
         String [] dateAndTime = dateToString(event.getStartTime());
 
+        // update height for the fragment after image is loaded
         ((TextView) descriptionView).setText(event.getDescription());
         int ih = imageView.getHeight();
         int dh = ((TextView) descriptionView).getHeight();
         ((TextView) descriptionView).setHeight(dh + ih);
 
+        // finish off setting info for Event
         ((TextView) titleView).setText(event.getTitle());
         ((TextView) locationView).setText(event.getVenue());
         ((TextView) dateView).setText(dateAndTime[0]+" "+dateAndTime[1]);
@@ -85,7 +86,8 @@ public class EventFragment extends DialogFragment {
     }
 
     public String[] dateToString(Date date) {
-
+        // converts a Date object to a readable format
+        // returns array of Strings.
         String dateString = date.toString();
         String [] parts =  dateString.split(" ");
 

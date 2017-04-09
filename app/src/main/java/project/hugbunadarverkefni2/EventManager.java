@@ -39,11 +39,10 @@ public class EventManager {
     private List<Event> shownEvents;
 
     public EventManager() {
-        // constructor
+        // empty constructor
     }
 
     public void fetchFBEvents(String lat, String lng, Context activity, final Runnable displayEventsCallback) {
-        // search string
 
         RequestQueue queue = Volley.newRequestQueue(activity);
 
@@ -68,7 +67,7 @@ public class EventManager {
                             shownEvents.add(allEvents.get(i));
                         }
 
-                        // Create
+                        // displaying events in MainActivity
                         displayEventsCallback.run();
 
                     }
@@ -127,7 +126,6 @@ public class EventManager {
                     "N/A"
             ));
         }
-
     }
 
 
@@ -140,7 +138,7 @@ public class EventManager {
     }
 
 
-
+    // parses JSON object to an Event object
     public List<Event> parseJSONtoEvent(JSONObject data) {
         List<Event> events = new ArrayList<Event>();
         SimpleDateFormat customDate = new SimpleDateFormat("yyyy-MM-dd'T'HH':'mm':'ss'+'SSSS");
