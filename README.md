@@ -7,7 +7,7 @@ Eventually lets you view Facebook events based on location! By default it shows 
 To run on emulator in Android Studio, user has to enable Google Play Services.
 `Tools > Android > SDK Manager > SDK Tools`
 
-Events of current location should appear when user opens the app. If the events do not appear, user has to enable location services for the app and restart the app.
+Events of current location should appear when user opens the app. If the events do not appear, user has to enable location services for the app and restart the app. The app only supports Android Nugat version 25 or newer.
 
 ## The Team 👨‍👨‍👦‍👦
 *Team number 9:* Magnús Ólafssos, Eyjólfur Árni Karlsson, Kristófer Másson and Sveinn Víkingur Þorsteinsson.
